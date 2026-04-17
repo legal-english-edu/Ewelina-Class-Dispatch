@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After-Class Dispatch – Lesson 2 – Ewelina</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark:   #1E2650;
+    --gold:   #D9AF62;
+    --rust:   #b5421a;
+    --ink:    #1a1a1a;
+    --paper:  #f7f4ef;
+    --cream:  #ede9e0;
+    --mid:    #2a3060;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Playfair Display', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead { background: var(--dark); }
+
+  .masthead-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 52px 32px 44px;
+  }
+
+  .site-logo {
+    width: 148px;
+    margin-bottom: 28px;
+    display: block;
+  }
+
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 5vw, 48px);
+    font-weight: 400;
+    color: var(--paper);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .masthead h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .dispatch-def {
+    border-left: 2px solid var(--gold);
+    padding-left: 16px;
+    margin-bottom: 32px;
+  }
+
+  .dispatch-def p {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+
+  .lesson-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .meta-value {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .back-nav {
+    display: inline-block;
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .back-nav:hover { text-decoration: underline; }
+
+  /* ── BODY WRAP ── */
+  .body-wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 32px 80px;
+  }
+
+  /* ── VOCAB SECTION ── */
+  .notes-header {
+    background: var(--dark);
+    margin: 0 -32px;
+    padding: 28px 32px 22px;
+  }
+
+  .notes-header .section-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .notes-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .vocab-section { padding-top: 36px; }
+
+  .category { margin-bottom: 40px; }
+
+  .category-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--cream);
+  }
+
+  .category-heading h3 {
+    font-family: 'Lato', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+  }
+
+  .entry {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--cream);
+  }
+
+  .entry:last-child { border-bottom: none; }
+
+  .entry-headword {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+
+  .entry-polish {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .entry-example {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+
+  .entry-translation {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: #777;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .entry-register {
+    font-family: 'Lato', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    background: var(--cream);
+    padding: 10px 14px;
+    border-left: 3px solid var(--gold);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  .entry-register .correct { color: #2a7a2a; font-weight: 700; }
+  .entry-register .incorrect { color: var(--rust); font-weight: 700; }
+
+  /* ── STORIES SECTION ── */
+  .stories-header {
+    background: var(--dark);
+    margin: 48px -32px 0;
+    padding: 28px 32px 22px;
+  }
+
+  .stories-header .section-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .stories-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .story {
+    padding: 40px 0 36px;
+    border-bottom: 2px solid var(--cream);
+  }
+
+  .story:last-child { border-bottom: none; }
+
+  .story-number {
+    font-family: 'Lato', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .story-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+
+  .story-body {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--ink);
+  }
+
+  .story-body p { margin-bottom: 16px; }
+  .story-body p:last-child { margin-bottom: 0; }
+
+  .story-body u {
+    text-decoration-color: var(--rust);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 2px;
+    color: var(--ink);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--cream);
+    font-family: 'Lato', sans-serif;
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ MASTHEAD ══ -->
+<div class="masthead">
+  <div class="masthead-inner">
+
+    <!-- Logo: inline SVG dark version -->
+    <a href="https://legal-english-edu.github.io/Ewelina-Class-Dispatch/index.html" class="site-logo">
+      <svg viewBox="0 0 400 120" xmlns="http://www.w3.org/2000/svg" width="148">
+        <!-- Feather / book icon -->
+        <g transform="translate(0,0)">
+          <rect x="0" y="0" width="110" height="120" rx="8" fill="#D9AF62" opacity="0.15"/>
+          <path d="M20 100 Q30 20 90 10 Q70 50 55 60 Q75 40 95 15 Q60 70 40 105 Z" fill="#D9AF62"/>
+          <path d="M38 95 Q48 55 85 20" stroke="#fff" stroke-width="2" fill="none" opacity="0.6"/>
+        </g>
+        <!-- Wordmark -->
+        <text x="125" y="42" font-family="'Lato', sans-serif" font-size="22" font-weight="700" fill="#ffffff" letter-spacing="2">LEGAL</text>
+        <text x="125" y="72" font-family="'Lato', sans-serif" font-size="22" font-weight="700" fill="#ffffff" letter-spacing="2">ENGLISH</text>
+        <text x="125" y="102" font-family="'Lato', sans-serif" font-size="22" font-weight="700" fill="#D9AF62" letter-spacing="2">EDU</text>
+      </svg>
+    </a>
+
+    <h1>After-Class Dispatch<br><em>Lesson 2</em></h1>
+
+    <div class="dispatch-def">
+      <p>dispatch (n.) — a message or report sent promptly to its destination.</p>
+      <p>A summary of the language from your session, ready to use.</p>
+    </div>
+
+    <div class="lesson-meta">
+      <div class="meta-item">
+        <span class="meta-label">Lesson</span>
+        <span class="meta-value">2</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-value">April 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Topic</span>
+        <span class="meta-value">Meetings, Updates &amp; Everyday Professional English</span>
+      </div>
+    </div>
+
+    <a class="back-nav" href="https://legal-english-edu.github.io/Ewelina-Class-Dispatch/index.html">← Back to all lessons</a>
+
+  </div>
+</div>
+
+<!-- ══ BODY ══ -->
+<div class="body-wrap">
+
+  <!-- VOCAB HEADER -->
+  <div class="notes-header">
+    <div class="section-label">Class Notes</div>
+    <h2>Lesson 2 — Vocabulary</h2>
+  </div>
+
+  <div class="vocab-section">
+
+    <!-- APOLOGISING -->
+    <div class="category">
+      <div class="category-heading">
+        <span>🟠</span>
+        <h3>Apologising for Being Late</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">Sorry I'm late</div>
+        <div class="entry-polish">Przepraszam, że się spóźniłam / spóźniłem</div>
+        <div class="entry-example">Sorry I'm late — the traffic was very bad this morning.</div>
+        <div class="entry-translation">Przepraszam, że się spóźniłam — ruch był dziś rano bardzo duży.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">Sorry for being late</div>
+        <div class="entry-polish">Przepraszam za spóźnienie</div>
+        <div class="entry-example">Sorry for being late — my previous meeting finished late.</div>
+        <div class="entry-translation">Przepraszam za spóźnienie — moje poprzednie spotkanie skończyło się późno.</div>
+        <div class="entry-register">
+          Both forms are natural and correct.<br>
+          <span class="correct">✅ Sorry I'm late</span> — direct, conversational.<br>
+          <span class="correct">✅ Sorry for being late</span> — slightly more formal, common in written messages too.
+        </div>
+      </div>
+    </div>
+
+    <!-- PLACES AND MOVEMENT -->
+    <div class="category">
+      <div class="category-heading">
+        <span>🔵</span>
+        <h3>Places and Movement</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">at the car park</div>
+        <div class="entry-polish">na parkingu</div>
+        <div class="entry-example">I am waiting for you at the car park near the office.</div>
+        <div class="entry-translation">Czekam na ciebie na parkingu obok biura.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">through the whole of Warsaw</div>
+        <div class="entry-polish">przez całą Warszawę</div>
+        <div class="entry-example">We had to drive through the whole of Warsaw to get there.</div>
+        <div class="entry-translation">Musieliśmy przejechać przez całą Warszawę, żeby tam dotrzeć.</div>
+        <div class="entry-register">
+          <span class="correct">✅ through the whole of Warsaw</span> — correct and emphatic.<br>
+          <span class="correct">✅ across Warsaw</span> — often more natural in everyday speech.
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERAL PHRASES -->
+    <div class="category">
+      <div class="category-heading">
+        <span>🟢</span>
+        <h3>General Phrases</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">It depends</div>
+        <div class="entry-polish">To zależy</div>
+        <div class="entry-example">It depends on the client and the situation.</div>
+        <div class="entry-translation">To zależy od klienta i sytuacji.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">an issue</div>
+        <div class="entry-polish">sprawa; kwestia; zagadnienie</div>
+        <div class="entry-example">We need to discuss one issue before the meeting starts.</div>
+        <div class="entry-translation">Musimy omówić jedną kwestię, zanim spotkanie się zacznie.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">a question</div>
+        <div class="entry-polish">pytanie</div>
+        <div class="entry-example">I have a question about the next stage of the project.</div>
+        <div class="entry-translation">Mam pytanie dotyczące kolejnego etapu projektu.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">a matter</div>
+        <div class="entry-polish">sprawa; kwestia</div>
+        <div class="entry-example">This is an important matter for the whole team.</div>
+        <div class="entry-translation">To jest ważna sprawa dla całego zespołu.</div>
+        <div class="entry-register">
+          Note: <em>issue</em>, <em>question</em>, and <em>matter</em> can all translate as <em>sprawa</em> or <em>kwestia</em> — but they are not always interchangeable in English. <em>Matter</em> often signals seriousness. <em>Question</em> implies something to be decided or clarified. <em>Issue</em> often implies a problem or point of discussion.
+        </div>
+      </div>
+    </div>
+
+    <!-- TECHNOLOGY -->
+    <div class="category">
+      <div class="category-heading">
+        <span>🟣</span>
+        <h3>Technology</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">a charger</div>
+        <div class="entry-polish">ładowarka</div>
+        <div class="entry-example">I need a charger because my battery is almost dead.</div>
+        <div class="entry-translation">Potrzebuję ładowarki, bo bateria jest prawie rozładowana.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">to charge the phone</div>
+        <div class="entry-polish">naładować telefon</div>
+        <div class="entry-example">I need ten minutes to charge the phone before the call.</div>
+        <div class="entry-translation">Potrzebuję dziesięciu minut, żeby naładować telefon przed rozmową.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">I can't see the chat box</div>
+        <div class="entry-polish">Nie widzę okna czatu</div>
+        <div class="entry-example">I can't see the chat box, so please send it again.</div>
+        <div class="entry-translation">Nie widzę okna czatu, więc proszę wyślij to jeszcze raz.</div>
+      </div>
+    </div>
+
+    <!-- WORK AND COURSES -->
+    <div class="category">
+      <div class="category-heading">
+        <span>🟡</span>
+        <h3>Work and Courses</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">to run a course</div>
+        <div class="entry-polish">prowadzić kurs</div>
+        <div class="entry-example">She runs a course for business professionals.</div>
+        <div class="entry-translation">Ona prowadzi kurs dla profesjonalistów z biznesu.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">give an update</div>
+        <div class="entry-polish">przekazać aktualizację; zdać relację z postępów</div>
+        <div class="entry-example">I usually give an update at the start of the meeting.</div>
+        <div class="entry-translation">Zwykle przekazuję aktualizację na początku spotkania.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">update everybody on where you are</div>
+        <div class="entry-polish">poinformować wszystkich, na jakim etapie jesteś</div>
+        <div class="entry-example">During the call, you update everybody on where you are with the project.</div>
+        <div class="entry-translation">Podczas rozmowy informujesz wszystkich, na jakim etapie jesteś z projektem.</div>
+        <div class="entry-register">
+          <span class="correct">✅ update everybody on where you are</span> — natural spoken business English.<br>
+          <span class="correct">✅ update everybody on your progress</span> — more formal and more standard.
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAILS AND DATES -->
+    <div class="category">
+      <div class="category-heading">
+        <span>🟤</span>
+        <h3>Emails and Dates</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">your email of 12 Feb</div>
+        <div class="entry-polish">twój / Pani email z 12 lutego</div>
+        <div class="entry-example">Thank you for your email of 12 Feb.</div>
+        <div class="entry-translation">Dziękuję za Pani email z 12 lutego.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">your email of the twelfth of February</div>
+        <div class="entry-polish">twój / Pani email z dwunastego lutego</div>
+        <div class="entry-example">I am writing in reply to your email of the twelfth of February.</div>
+        <div class="entry-translation">Piszę w odpowiedzi na Pani email z dwunastego lutego.</div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">your email received on the 12th of February</div>
+        <div class="entry-polish">twój / Pani email otrzymany 12 lutego</div>
+        <div class="entry-example">I am responding to your email received on the 12th of February.</div>
+        <div class="entry-translation">Odpowiadam na Pani email otrzymany 12 lutego.</div>
+        <div class="entry-register">
+          All three are correct in formal written English. The <em>received on the...</em> form is particularly common in legal and formal business correspondence.
+        </div>
+      </div>
+    </div>
+
+    <!-- LANGUAGE AND MEANING -->
+    <div class="category">
+      <div class="category-heading">
+        <span>⚫</span>
+        <h3>Language and Meaning</h3>
+      </div>
+
+      <div class="entry">
+        <div class="entry-headword">to contaminate / overload / fill Polish with English borrowings</div>
+        <div class="entry-polish">zanieczyszczać / przeładowywać / wypełniać polszczyznę angielskimi zapożyczeniami</div>
+        <div class="entry-example">Some speakers worry about contaminating Polish with English borrowings.</div>
+        <div class="entry-translation">Niektórzy użytkownicy języka martwią się o zanieczyszczanie polszczyzny angielskimi zapożyczeniami.</div>
+        <div class="entry-register">
+          <span class="correct">✅ contaminate</span> — correct, but strong in tone.<br>
+          <span class="correct">✅ overload</span> — good if the idea is excess.<br>
+          <span class="correct">✅ fill</span> — less strong, more neutral.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /vocab-section -->
+
+  <!-- ══ STORIES ══ -->
+  <div class="stories-header">
+    <div class="section-label">Reading Practice</div>
+    <h2>Two Stories from Lesson 2</h2>
+  </div>
+
+  <!-- STORY 1 -->
+  <div class="story">
+    <div class="story-number">Story 1</div>
+    <div class="story-title">The Long Way Round</div>
+    <div class="story-body">
+      <p>
+        Marta joined the call two minutes late. "I'm <u>sorry I'm late</u>," she said. "I had to drive 
+        <u>through the whole of Warsaw</u> this morning. The traffic was terrible." Her Swedish colleague 
+        smiled. "No problem. We were just starting."
+      </p>
+      <p>
+        Marta opened her laptop. The screen was black. Her battery was dead. "Does anyone have a <u>charger</u>?" 
+        she asked. Someone passed one across the table. She needed five minutes to <u>charge the phone</u> 
+        too — she had left her cable <u>at the car park</u>.
+      </p>
+      <p>
+        When she was finally ready, her manager looked at her. "Marta, can you <u>give an update</u> on 
+        the Oslo contract?" Marta nodded. She took a breath. "<u>Update everybody on where you are</u>," 
+        she told herself. She knew this phrase. She had practised it.
+      </p>
+      <p>
+        "We received their comments last week," she began. "There is one <u>issue</u> we need to discuss 
+        before we can sign. It's a <u>matter</u> of liability — not complicated, but important. 
+        I also have a <u>question</u> about the payment schedule. <u>It depends</u> on whether they 
+        want monthly or quarterly terms."
+      </p>
+      <p>
+        The room was quiet. Then her manager said: "Good. That's exactly what we needed to hear."
+      </p>
+    </div>
+  </div>
+
+  <!-- STORY 2 -->
+  <div class="story">
+    <div class="story-number">Story 2</div>
+    <div class="story-title">The Email of the Twelfth</div>
+    <div class="story-body">
+      <p>
+        Piotr <u>runs a course</u> for business professionals. Once a month he holds a group session online. 
+        That morning, before the session started, he got a message from one of his participants.
+      </p>
+      <p>
+        "I am writing in reply to <u>your email of the twelfth of February</u>," the message began. 
+        "I can't join today. I <u>can't see the chat box</u> and my audio isn't working. Could you 
+        resend the link?"
+      </p>
+      <p>
+        Piotr replied immediately. He sent the link. He also sent the agenda as an attachment. 
+        "No problem," he wrote. "Just join when you can."
+      </p>
+      <p>
+        During the session, a colleague asked him: "Piotr, do you worry about using so many English 
+        words in Polish? Some people say it <u>contaminates</u> the language." Piotr thought for a moment. 
+        "<u>It depends</u>," he said. "If the word fills a real gap, I use it. If there's a good Polish 
+        word, I use that. I don't want to <u>overload Polish with English borrowings</u> — but I also 
+        don't want to pretend English doesn't exist."
+      </p>
+      <p>
+        After the session, he sent a short summary by email. He finished it with one line: "There is 
+        one important <u>matter</u> I forgot to cover today. I will add a note before <u>one meeting a month</u> 
+        becomes not enough."
+      </p>
+    </div>
+  </div>
+
+  <footer>Business English &nbsp;·&nbsp; Prepared for Ewelina &nbsp;·&nbsp; April 2026</footer>
+
+</div><!-- /body-wrap -->
+
+</body>
+</html>
